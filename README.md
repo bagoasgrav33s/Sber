@@ -1,4 +1,4 @@
-<!doctype html>
+<html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -241,3 +241,117 @@ canvas{max-width:360px}
       <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
     </svg>
   </div>
+  <div class="index">
+    <div class="indexValue" id="indexVal">68</div>
+    <div class="indexLabel">Индекс жизненной свободы</div>
+  </div>
+
+  <div class="missions">
+    <div class="mission">
+      <span>Подушка безопасности</span>
+      <button onclick="boost(0)">+</button>
+    </div>
+    <div class="mission">
+      <span>Гибкость бюджета</span>
+      <button onclick="boost(1)">+</button>
+    </div>
+    <div class="mission">
+      <span>Движение к цели</span>
+      <button onclick="boost(3)">+</button>
+    </div>
+  </div>
+</aside>
+
+<!-- CENTER -->
+<main class="center">
+  <div class="card radarWrap">
+    <canvas id="radar" width="360" height="360"></canvas>
+    <div class="insights" id="insights"></div>
+  </div>
+</main>
+
+<!-- RIGHT -->
+<aside class="ai">
+  <div class="aiHeader">Финансовый Доппельгангер</div>
+  <div class="aiLog" id="aiLog">
+    <div class="msg bot">
+      Я слежу за устойчивостью твоей жизни. Готов подсказать следующий шаг.
+    </div>
+  </div>
+  <div class="aiInput">
+    <input id="q" placeholder="Опиши ситуацию или решение…">
+    <button onclick="ask()">→</button>
+  </div>
+</aside>
+
+</div>
+
+<script>
+let data=[65,60,70,55];
+const labels=["Безопасность","Гибкость","Предсказуемость","Цель"];
+const ctx=document.getElementById("radar").getContext("2d");
+
+function draw(){
+  ctx.clearRect(0,0,360,360);
+  const cx=180,cy=180,r=120;
+
+  for(let i=0;i<4;i++){
+    const a=i*Math.PI/2;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
+    ctx.strokeStyle="#dff1ea";
+    ctx.stroke();
+  }
+
+  ctx.beginPath();
+  data.forEach((v,i)=>{
+    const a=i*Math.PI/2;
+    const rr=r*(v/100);
+    const x=cx+rr*Math.cos(a);
+    const y=cy+rr*Math.sin(a);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  });
+  ctx.closePath();
+  ctx.fillStyle="rgba(46,196,198,.25)";
+  ctx.strokeStyle="#2EC4C6";
+  ctx.fill();ctx.stroke();
+}
+
+function boost(i){
+  data[i]=Math.min(100,data[i]+5);
+  document.getElementById("indexVal").textContent=
+    Math.round(data.reduce((a,b)=>a+b)/4);
+  insight(`${labels[i]} усилилась — форма индекса стала стабильнее`);
+  draw();
+}
+
+function insight(t){
+  const d=document.createElement("div");
+  d.className="insight";
+  d.textContent=t;
+  document.getElementById("insights").prepend(d);
+}
+
+function ask(){
+  const q=document.getElementById("q");
+  if(!q.value)return;
+  const log=document.getElementById("aiLog");
+
+  log.innerHTML+=`<div class="msg user">${q.value}</div>`;
+  const b=document.createElement("div");
+  b.className="msg bot";
+  b.textContent="Я моделирую последствия…";
+  log.appendChild(b);
+
+  setTimeout(()=>{
+    b.textContent="Это решение временно снизит гибкость, но ускорит достижение цели. Хочешь посмотреть альтернативный сценарий?";
+  },900);
+
+  q.value="";
+}
+
+draw();
+</script>
+</body>
+</html>
