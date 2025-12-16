@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Свободный Я — Сбер-версия</title>
+<title>Свободный Я</title>
 
 <style>
 :root{
